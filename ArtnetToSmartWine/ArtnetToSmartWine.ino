@@ -78,12 +78,6 @@ void loop()
 {
   // we call the read function inside the loop
   artnet.readIt();
-  String msg = smwSerial.getStrGeneral(colorSmartWine);
-  
-  Serial.print("Msg sent to SmartWine : ");
-  Serial.println(msg);
-  
-  mySerial.println(msg);
 }
 
 void onDmxFrame(uint16_t universe, uint16_t length, uint8_t sequence, uint8_t* data)
@@ -92,16 +86,16 @@ void onDmxFrame(uint16_t universe, uint16_t length, uint8_t sequence, uint8_t* d
   colorStrip = strip.Color(data[0], data[1], data[2]);
   colorSmartWine = strip.Color(data[3], data[4], data[5]);
 
-  // Half Strip ---
-  for(uint16_t i=0; i< 0.5 * strip.numPixels(); i++) {
+  // To the strip --
+  for(uint16_t i=0; i< strip.numPixels(); i++) {
     strip.setPixelColor(i, colorStrip);
   }
   strip.show();
   
-  // Half Strip ---
-  for(uint16_t i=0.5 * strip.numPixels(); i< strip.numPixels(); i++) {
-    strip.setPixelColor(i, colorSmartWine);
-    //smwSerial.sendGeneral(colorSmartWine);
-  }
-  strip.show();
+  // To SmartWine
+  String msg = smwSerial.getStrGeneral(colorSmartWine);
+  Serial.print("Msg sent to SmartWine : ");
+  Serial.println(msg);
+  mySerial.println(msg);
+  
 }

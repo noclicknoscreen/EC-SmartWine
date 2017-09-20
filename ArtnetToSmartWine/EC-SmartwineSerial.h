@@ -17,9 +17,6 @@
 
 class SmartwineSerial {
 
-  public:
-    SmartwineSerial();
-
   private:
     uint32_t     m_colorRobi;
     uint32_t     m_colorL_Bottles;

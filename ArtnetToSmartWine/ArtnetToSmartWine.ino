@@ -34,6 +34,8 @@ Adafruit_NeoPixel strip = Adafruit_NeoPixel(10, LED_PIN, NEO_GRB + NEO_KHZ800);
 #include "SoftwareSerial.h"
 
 SmartwineSerial smwSerial;
+// RX : 10
+// TX : 11
 SoftwareSerial mySerial(10, 11, true);
 // ------------------------------------------------------------------------
 
@@ -52,7 +54,7 @@ void setup()
 
   InitLeds();
   mySerial.begin(19200);
-  mySerial.println("Hello, world?");
+  //mySerial.println("Hello, world ?");
 }
 
 void InitLeds() {
@@ -78,6 +80,22 @@ void loop()
 {
   // we call the read function inside the loop
   artnet.readIt();
+
+  Serial.println(".");
+    
+  // To SmartWine
+  String msg = smwSerial.getStrGeneral(colorSmartWine);
+  Serial.print("Msg sent to SmartWine : ");
+  Serial.println(msg);
+
+  for(uint16_t i=0; i< msg.length(); i++) {
+    mySerial.write(msg[i]);
+    Serial.print(String(msg[i],HEX));
+  }
+  //mySerial.print(msg);
+
+  delay(50);
+  
 }
 
 void onDmxFrame(uint16_t universe, uint16_t length, uint8_t sequence, uint8_t* data)
@@ -91,11 +109,5 @@ void onDmxFrame(uint16_t universe, uint16_t length, uint8_t sequence, uint8_t* d
     strip.setPixelColor(i, colorStrip);
   }
   strip.show();
-  
-  // To SmartWine
-  String msg = smwSerial.getStrGeneral(colorSmartWine);
-  Serial.print("Msg sent to SmartWine : ");
-  Serial.println(msg);
-  mySerial.println(msg);
   
 }
